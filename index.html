@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SophiaVerse Control Deck</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">SOPHIAVERSE · LOCAL BRIDGE</p>
+          <h1>Control Deck</h1>
+        </div>
+        <div class="connection-card">
+          <span id="connectionDot" class="status-dot"></span>
+          <div>
+            <span id="connectionLabel">Disconnected</span>
+            <small id="connectionDetail">No live state</small>
+          </div>
+        </div>
+      </header>
+
+      <section class="connection-panel panel">
+        <label class="field grow">
+          <span>WebSocket endpoint</span>
+          <input id="socketUrl" value="ws://127.0.0.1:8765/game/state" spellcheck="false" />
+        </label>
+        <label class="field route-field">
+          <span>Command route</span>
+          <select id="commandRoute">
+            <option value="unity">Direct to Unity</option>
+            <option value="omegaclaw" disabled>Via OmegaClaw · next</option>
+          </select>
+        </label>
+        <button id="connectButton" class="button primary">Connect</button>
+      </section>
+
+      <section class="metrics-grid">
+        <article class="metric panel">
+          <span class="metric-label">Controlled entity</span>
+          <strong id="controlledEntity">—</strong>
+          <small id="controller">Controller: —</small>
+        </article>
+        <article class="metric panel">
+          <span class="metric-label">Player position</span>
+          <strong id="playerPosition">—</strong>
+          <small id="playerMotion">Waiting for state</small>
+        </article>
+        <article class="metric panel">
+          <span class="metric-label">Player heading</span>
+          <strong id="playerHeading">—</strong>
+          <small id="playerForward">Forward: —</small>
+        </article>
+        <article class="metric panel">
+          <span class="metric-label">Sen state</span>
+          <strong id="senState">—</strong>
+          <small id="senPosition">Position: —</small>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <div class="controls-column">
+          <article class="panel control-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">PLAYER · PRIMITIVE</p>
+                <h2>Movement</h2>
+              </div>
+              <span id="primitiveCount" class="chip">0 available</span>
+            </div>
+
+            <div class="control-settings">
+              <label class="field">
+                <span>Step distance</span>
+                <div class="range-row">
+                  <input id="distance" type="range" min="0.1" max="2" step="0.1" value="0.5" />
+                  <output id="distanceValue">0.5 m</output>
+                </div>
+              </label>
+              <label class="field">
+                <span>Rotation</span>
+                <div class="range-row">
+                  <input id="degrees" type="range" min="1" max="90" step="1" value="15" />
+                  <output id="degreesValue">15°</output>
+                </div>
+              </label>
+            </div>
+
+            <div class="movement-deck">
+              <button class="move-button rotate" data-action="RotateLeft" aria-label="Rotate left">↶</button>
+              <button class="move-button" data-action="MoveAhead">↑<small>Ahead</small></button>
+              <button class="move-button rotate" data-action="RotateRight" aria-label="Rotate right">↷</button>
+              <button class="move-button" data-action="MoveLeft">←<small>Left</small></button>
+              <button id="cancelButton" class="move-button stop" disabled>STOP</button>
+              <button class="move-button" data-action="MoveRight">→<small>Right</small></button>
+              <span></span>
+              <button class="move-button" data-action="MoveBack">↓<small>Back</small></button>
+              <span></span>
+            </div>
+          </article>
+
+          <article class="panel control-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">PLAYER · NAVMESH</p>
+                <h2>Move to entity</h2>
+              </div>
+              <span id="destinationCount" class="chip">0 destinations</span>
+            </div>
+            <div class="navigate-row">
+              <label class="field grow">
+                <span>Destination</span>
+                <select id="destination">
+                  <option value="">Waiting for Unity state…</option>
+                </select>
+              </label>
+              <button id="moveToButton" class="button accent" disabled>Move there</button>
+            </div>
+          </article>
+
+          <article class="panel perception-panel">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">PERCEPTION</p>
+                <h2>Sen’s field of view</h2>
+              </div>
+              <span id="observer" class="chip">Observer: —</span>
+            </div>
+            <div id="visibleEntities" class="entity-list empty-state">Nothing reported yet</div>
+          </article>
+        </div>
+
+        <div class="telemetry-column">
+          <article class="panel activity-panel">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">LIVE</p>
+                <h2>WebSocket activity</h2>
+              </div>
+              <div class="activity-actions">
+                <span id="messageCount" class="chip">0 messages</span>
+                <button id="clearLog" class="text-button">Clear</button>
+              </div>
+            </div>
+            <div id="activityLog" class="activity-log">
+              <div class="empty-state">Connect to see state and command messages.</div>
+            </div>
+          </article>
+
+          <article class="panel raw-panel">
+            <details>
+              <summary>
+                <span>Latest raw state</span>
+                <span class="summary-hint">JSON</span>
+              </summary>
+              <pre id="rawState">No state received.</pre>
+            </details>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
