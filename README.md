@@ -2,6 +2,11 @@
 
 A local dashboard for inspecting `/game/state` WebSocket snapshots and sending Player movement commands to Unity.
 
+The perception panel reads `Payload.UInput.Perceptions.Player` from schema `2.2`
+and shows the Player sensor's pose, field of view, range, visible entities, distance,
+angle, type, and currently available actions. It falls back to the legacy
+`Payload.UInput.Perception` field when connected to an older Unity build.
+
 ## Start
 
 From this folder:
