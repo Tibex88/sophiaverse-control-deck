@@ -23,6 +23,10 @@ const elements = {
   destinationCount: document.querySelector("#destinationCount"),
   moveToButton: document.querySelector("#moveToButton"),
   observer: document.querySelector("#observer"),
+  sensorFov: document.querySelector("#sensorFov"),
+  sensorRange: document.querySelector("#sensorRange"),
+  viewOrigin: document.querySelector("#viewOrigin"),
+  viewDirection: document.querySelector("#viewDirection"),
   visibleEntities: document.querySelector("#visibleEntities"),
   messageCount: document.querySelector("#messageCount"),
   clearLog: document.querySelector("#clearLog"),
@@ -111,7 +115,7 @@ function renderSnapshot(message) {
   const input = payload.UInput ?? {};
   const player = input.PlayerStatus ?? {};
   const sen = input.AgentStatus ?? {};
-  const perception = input.Perception ?? {};
+  const perception = input.Perceptions?.Player ?? input.Perception ?? {};
   const playerActions = payload.AvailableActions?.Player ?? {};
 
   actionInProgress = payload.Controller === "OmegaClaw";
@@ -125,6 +129,10 @@ function renderSnapshot(message) {
   elements.senState.textContent = sen.CurrentState ?? "—";
   elements.senPosition.textContent = `Position: ${formatVector(sen.Position)}`;
   elements.observer.textContent = `Observer: ${perception.Observer ?? "—"}`;
+  elements.sensorFov.textContent = `${formatNumber(perception.FieldOfViewDegrees)}° FOV`;
+  elements.sensorRange.textContent = `${formatNumber(perception.MaxDistance)} m range`;
+  elements.viewOrigin.textContent = formatVector(perception.ViewOrigin);
+  elements.viewDirection.textContent = formatVector(perception.ViewDirection);
   elements.rawState.textContent = JSON.stringify(message, null, 2);
 
   availablePrimitives = new Set(playerActions.Primitive ?? []);
@@ -151,7 +159,7 @@ function updateVisibleEntities(entities) {
   elements.visibleEntities.replaceChildren();
   if (!entities.length) {
     elements.visibleEntities.className = "entity-list empty-state";
-    elements.visibleEntities.textContent = "No entities are currently visible to Sen.";
+    elements.visibleEntities.textContent = "No entities are currently visible to the Player sensor.";
     return;
   }
 
@@ -162,8 +170,22 @@ function updateVisibleEntities(entities) {
     const name = document.createElement("strong");
     name.textContent = entity.DisplayName || entity.Name || "Unknown entity";
     const distance = document.createElement("small");
-    distance.textContent = `${Number(entity.Distance ?? 0).toFixed(1)} m · ${(entity.AvailableActions ?? []).join(", ") || "observe"}`;
-    card.append(name, distance);
+    distance.textContent = `${formatNumber(entity.Distance)} m · ${formatNumber(entity.AngleDegrees)}°`;
+    const kinds = document.createElement("small");
+    kinds.textContent = (entity.Kinds ?? []).join(" · ") || "entity";
+    const unityMetadata = document.createElement("small");
+    const registration = entity.IsRegistered ? "registered" : "Unity collider";
+    const layer = entity.LayerName || `layer ${entity.Layer ?? "?"}`;
+    const collider = `${entity.ColliderType || "collider"}${entity.IsTrigger ? " trigger" : ""}`;
+    unityMetadata.textContent = `${registration} · ${entity.Tag || "Untagged"} · ${layer} · ${collider}`;
+    const entityPath = document.createElement("small");
+    entityPath.className = "entity-path";
+    entityPath.textContent = entity.EntityId || "No Unity hierarchy path";
+    entityPath.title = entity.EntityId || "";
+    const actions = document.createElement("small");
+    actions.className = "entity-actions";
+    actions.textContent = (entity.AvailableActions ?? []).join(", ") || "observe";
+    card.append(name, distance, kinds, unityMetadata, entityPath, actions);
     elements.visibleEntities.append(card);
   }
 }
@@ -232,6 +254,11 @@ function summarizeSnapshot(message) {
 function formatVector(vector) {
   if (!Array.isArray(vector)) return "—";
   return vector.map((value) => Number(value).toFixed(2)).join(", ");
+}
+
+function formatNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toFixed(1) : "—";
 }
 
 function showToast(message, isError = false) {

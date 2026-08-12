@@ -116,6 +116,11 @@ input:focus, select:focus { border-color: rgba(80, 230, 210, 0.55); box-shadow: 
 .section-heading { justify-content: space-between; margin-bottom: 20px; }
 .section-heading.compact { margin-bottom: 14px; }
 .chip { color: var(--muted); background: rgba(255, 255, 255, 0.045); border: 1px solid var(--border); border-radius: 999px; padding: 6px 10px; font-size: 0.68rem; white-space: nowrap; }
+.sensor-chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.sensor-vectors { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.sensor-vectors > div { padding: 10px 11px; border: 1px solid var(--border); border-radius: 10px; background: rgba(255, 255, 255, 0.025); min-width: 0; }
+.sensor-vectors span { color: var(--muted); display: block; font-size: 0.64rem; margin-bottom: 4px; }
+.sensor-vectors strong { display: block; font: 0.72rem ui-monospace, SFMono-Regular, Menlo, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .control-settings { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 .range-row { gap: 12px; }
@@ -145,6 +150,8 @@ output { min-width: 46px; color: var(--text); font-size: 0.78rem; text-align: ri
 .entity { padding: 9px 11px; border: 1px solid rgba(80, 230, 210, 0.18); background: rgba(80, 230, 210, 0.055); border-radius: 10px; }
 .entity strong { display: block; font-size: 0.8rem; }
 .entity small { color: var(--muted); display: block; margin-top: 3px; }
+.entity .entity-path { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.62rem; }
+.entity .entity-actions { color: var(--cyan); }
 .empty-state { color: var(--muted); font-size: 0.78rem; padding: 14px 0; }
 
 .activity-panel { min-height: 500px; }
@@ -184,6 +191,9 @@ pre { max-height: 360px; overflow: auto; margin: 0; padding: 16px 20px; border-t
   .connection-panel .button { flex: 1; }
   .metrics-grid { grid-template-columns: 1fr; }
   .control-settings { grid-template-columns: 1fr; }
+  .section-heading.compact { align-items: flex-start; gap: 12px; }
+  .sensor-chips { justify-content: flex-start; }
+  .sensor-vectors { grid-template-columns: 1fr; }
   .navigate-row { align-items: stretch; flex-direction: column; }
   .navigate-row .button { min-height: 44px; }
 }

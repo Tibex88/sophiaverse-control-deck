@@ -126,10 +126,18 @@
           <article class="panel perception-panel">
             <div class="section-heading compact">
               <div>
-                <p class="eyebrow">PERCEPTION</p>
-                <h2>Sen’s field of view</h2>
+                <p class="eyebrow">PLAYER · SENSOR</p>
+                <h2>Visible environment</h2>
               </div>
-              <span id="observer" class="chip">Observer: —</span>
+              <div class="sensor-chips">
+                <span id="observer" class="chip">Observer: —</span>
+                <span id="sensorFov" class="chip">—° FOV</span>
+                <span id="sensorRange" class="chip">— m range</span>
+              </div>
+            </div>
+            <div class="sensor-vectors">
+              <div><span>View origin</span><strong id="viewOrigin">—</strong></div>
+              <div><span>View direction</span><strong id="viewDirection">—</strong></div>
             </div>
             <div id="visibleEntities" class="entity-list empty-state">Nothing reported yet</div>
           </article>

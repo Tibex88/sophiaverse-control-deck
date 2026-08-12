@@ -54,7 +54,11 @@ function connect() {
         return;
       }
 
-      const visibleEntities = message.Payload?.UInput?.Perception?.VisibleEntities ?? [];
+      const perception =
+        message.Payload?.UInput?.Perceptions?.Player ??
+        message.Payload?.UInput?.Perception ??
+        {};
+      const visibleEntities = perception.VisibleEntities ?? [];
       const visibleNames = visibleEntities.map((entity) => entity.Name).join(", ") || "none";
       const sophia = message.Payload?.UInput?.AgentStatus ?? {};
       const player = message.Payload?.UInput?.PlayerStatus ?? {};
@@ -69,7 +73,7 @@ function connect() {
           `controlled=${controlledEntity} controller=${controller} ` +
           `player=${formatPosition(player.Position)} playerMoving=${player.IsMoving ?? "unknown"} ` +
           `sophia=${formatPosition(sophia.Position)} sophiaState=${sophia.CurrentState ?? "unknown"} ` +
-          `observer=${message.Payload?.UInput?.Perception?.Observer ?? "unknown"} ` +
+          `observer=${perception.Observer ?? "unknown"} ` +
           `visible=${visibleNames}`,
       );
     } catch (error) {
